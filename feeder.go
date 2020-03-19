@@ -132,15 +132,15 @@ func (lf *LuftdatenFeeder) Feed(data *StationData) {
 	}
 	lf.postSensorData(sensorId, 1, pmSensorData)
 
-	envSensorData := &SensorData{
-		SoftwareVersion: data.Version,
-		SensorDataValues: []SensorDataValue{
-			{ValueType: "temperature", Value: Float32RefRound(data.LastMeasurement.Temperature, 1)},
-			{ValueType: "humidity", Value: Float32RefRound(data.LastMeasurement.Humidity, 1)},
-			{ValueType: "pressure", Value: 100 * Float32RefRound(data.LastMeasurement.Pressure, 2)},
-		},
-	}
-	lf.postSensorData(sensorId, 11, envSensorData)
+	// envSensorData := &SensorData{
+	// 	SoftwareVersion: data.Version,
+	// 	SensorDataValues: []SensorDataValue{
+	// 		{ValueType: "temperature", Value: Float32RefRound(data.LastMeasurement.Temperature, 1)},
+	// 		{ValueType: "humidity", Value: Float32RefRound(data.LastMeasurement.Humidity, 1)},
+	// 		{ValueType: "pressure", Value: 100 * Float32RefRound(data.LastMeasurement.Pressure, 2)},
+	// 	},
+	// }
+	// lf.postSensorData(sensorId, 11, envSensorData)
 
 	lf.lastSensorDataPostTime = time.Now()
 }
@@ -200,9 +200,9 @@ func (acf *AirCmsFeeder) Feed(data *StationData) {
 		SensorDataValues: []SensorDataValue{
 			{ValueType: "SDS_P1", Value: Float32RefRound(data.LastMeasurement.Pm10, 1)},
 			{ValueType: "SDS_P2", Value: Float32RefRound(data.LastMeasurement.Pm25, 1)},
-			{ValueType: "BME280_temperature", Value: Float32RefRound(data.LastMeasurement.Temperature, 1)},
-			{ValueType: "BME280_humidity", Value: Float32RefRound(data.LastMeasurement.Humidity, 1)},
-			{ValueType: "BME280_pressure", Value: 100 * Float32RefRound(data.LastMeasurement.Pressure, 2)},
+			// {ValueType: "BME280_temperature", Value: Float32RefRound(data.LastMeasurement.Temperature, 1)},
+			// {ValueType: "BME280_humidity", Value: Float32RefRound(data.LastMeasurement.Humidity, 1)},
+			// {ValueType: "BME280_pressure", Value: 100 * Float32RefRound(data.LastMeasurement.Pressure, 2)},
 		},
 	}
 

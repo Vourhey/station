@@ -36,11 +36,11 @@ func main() {
 	rpiI2cBusId := flag.Int("i", 1, "RPi station I2C bus ID")
 	rpiSerialPort := flag.String("s", "/dev/ttyAMA0", "RPi station serial port name")
 
-	apiServerUrl := flag.String("a", "https://api.openair.city/v1/feeder", "feeder endpoint address")
+	//apiServerUrl := flag.String("a", "https://api.openair.city/v1/feeder", "feeder endpoint address")
 
 	updateInterval := flag.Duration("t", 1*time.Minute, "data update interval")
 
-	keepDuration := flag.Duration("k", 6*time.Hour, "buffered data keep duration")
+	//keepDuration := flag.Duration("k", 6*time.Hour, "buffered data keep duration")
 
 	settleTime := flag.Duration("S", 5*time.Minute, "data settle time after station restart")
 
@@ -109,9 +109,9 @@ func main() {
 	log.Printf("starting station, version: %s", version)
 
 	feeders := []Feeder{
-		NewOpenAirFeeder(*apiServerUrl, *keepDuration),
+		//NewOpenAirFeeder(*apiServerUrl, *keepDuration),
 		NewLuftdatenFeeder(),
-		NewAirCmsFeederFeeder(),
+		//NewAirCmsFeederFeeder(),
 	}
 
 	RunStation(ctx, station, feeders, *updateInterval, *settleTime, *disablePmCorrectionFlag)

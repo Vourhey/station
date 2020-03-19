@@ -25,9 +25,9 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/d2r2/go-bsbmp"
-	"github.com/d2r2/go-i2c"
-	bmelogger "github.com/d2r2/go-logger"
+	// "github.com/d2r2/go-bsbmp"
+	// "github.com/d2r2/go-i2c"
+	// bmelogger "github.com/d2r2/go-logger"
 
 	"github.com/NotifAi/serial"
 
@@ -107,8 +107,8 @@ func (es *EspStation) GetData() (*StationData, error) {
 type RpiStation struct {
 	version string
 
-	i2cBusId          int
-	bmeSensorAddress  int
+	//i2cBusId          int
+	//bmeSensorAddress  int
 	sdsSensorPort     string
 	sdsSensorInterval int
 
@@ -116,10 +116,10 @@ type RpiStation struct {
 	macAddress string
 	tokenId    string
 
-	i2cBus     *i2c.I2C
+	// i2cBus     *i2c.I2C
 	serialPort serial.Port
 
-	bmeSensor *bsbmp.BMP
+	//bmeSensor *bsbmp.BMP
 	sdsSensor *sds011.Sensor
 
 	pmLock sync.RWMutex
@@ -138,8 +138,8 @@ func NewRpiStation(version string, i2cBusId int, bmeSensorAddress int, sdsSensor
 		startTime:         time.Now(),
 		macAddress:        macAddress,
 		tokenId:           stationTokenId(macAddress),
-		i2cBusId:          i2cBusId,
-		bmeSensorAddress:  bmeSensorAddress,
+		//i2cBusId:          i2cBusId,
+		//bmeSensorAddress:  bmeSensorAddress,
 		sdsSensorPort:     sdsSensorPort,
 		sdsSensorInterval: sdsSensorInterval,
 	}, nil
@@ -153,14 +153,14 @@ func (rs *RpiStation) Start() error {
 	log.Print("starting RPi station...")
 
 	// Init BME280 sensor I2C bus
-	if err := rs.initI2cBus(); err != nil {
-		return fmt.Errorf("I2C bus init error: %v", err)
-	}
+	// if err := rs.initI2cBus(); err != nil {
+	// 	return fmt.Errorf("I2C bus init error: %v", err)
+	// }
 
-	// Init BME280 sensor
-	if err := rs.initBmeSensor(); err != nil {
-		return fmt.Errorf("BME280 sensor init error: %v", err)
-	}
+	// // Init BME280 sensor
+	// if err := rs.initBmeSensor(); err != nil {
+	// 	return fmt.Errorf("BME280 sensor init error: %v", err)
+	// }
 
 	// Open SDS011 sensor serial port
 	if err := rs.initSerialPort(); err != nil {
@@ -194,28 +194,28 @@ func (rs *RpiStation) flushSerialPort() error {
 	return rs.serialPort.Flush()
 }
 
-func (rs *RpiStation) initI2cBus() (err error) {
-	rs.i2cBus, err = i2c.NewI2C(uint8(rs.bmeSensorAddress), rs.i2cBusId)
-	return
-}
+// func (rs *RpiStation) initI2cBus() (err error) {
+// 	rs.i2cBus, err = i2c.NewI2C(uint8(rs.bmeSensorAddress), rs.i2cBusId)
+// 	return
+// }
 
-func (rs *RpiStation) initBmeSensor() error {
-	_ = bmelogger.ChangePackageLogLevel("i2c", bmelogger.ErrorLevel)
-	_ = bmelogger.ChangePackageLogLevel("bsbmp", bmelogger.ErrorLevel)
-
-	// Check BME280 sensor presence
-	var err error
-	if rs.bmeSensor, err = bsbmp.NewBMP(bsbmp.BME280, rs.i2cBus); err != nil {
-		return fmt.Errorf("can't find BME280 sensor: %v", err)
-	}
-
-	// Check BME280 sensor have valid state
-	if err = rs.bmeSensor.IsValidCoefficients(); err != nil {
-		return fmt.Errorf("invalid BME280 sensor state: %v", err)
-	}
-
-	return nil
-}
+// func (rs *RpiStation) initBmeSensor() error {
+// 	_ = bmelogger.ChangePackageLogLevel("i2c", bmelogger.ErrorLevel)
+// 	_ = bmelogger.ChangePackageLogLevel("bsbmp", bmelogger.ErrorLevel)
+//
+// 	// Check BME280 sensor presence
+// 	var err error
+// 	if rs.bmeSensor, err = bsbmp.NewBMP(bsbmp.BME280, rs.i2cBus); err != nil {
+// 		return fmt.Errorf("can't find BME280 sensor: %v", err)
+// 	}
+//
+// 	// Check BME280 sensor have valid state
+// 	if err = rs.bmeSensor.IsValidCoefficients(); err != nil {
+// 		return fmt.Errorf("invalid BME280 sensor state: %v", err)
+// 	}
+//
+// 	return nil
+// }
 
 func (rs *RpiStation) initSdsSensor() error {
 	rs.sdsSensor = sds011.NewSensor(rs.serialPort)
@@ -241,7 +241,7 @@ func (rs *RpiStation) readSdsSensor() {
 
 func (rs *RpiStation) Stop() {
 	log.Print("stopping RPi station...")
-	_ = rs.i2cBus.Close()
+	// _ = rs.i2cBus.Close()
 	rs.sdsSensor.Close()
 }
 
@@ -249,24 +249,24 @@ func (rs *RpiStation) GetData() (*StationData, error) {
 	timestamp := api.UnixTime(time.Now())
 
 	// Read temperature in Celsius degree
-	temperature, err := rs.bmeSensor.ReadTemperatureC(bsbmp.ACCURACY_STANDARD)
-	if err != nil {
-		return nil, err
-	}
+	// temperature, err := rs.bmeSensor.ReadTemperatureC(bsbmp.ACCURACY_STANDARD)
+	// if err != nil {
+	// 	return nil, err
+	// }
 
-	// Read relative humidity
-	_, humidity, err := rs.bmeSensor.ReadHumidityRH(bsbmp.ACCURACY_STANDARD)
-	if err != nil {
-		return nil, err
-	}
+	// // Read relative humidity
+	// _, humidity, err := rs.bmeSensor.ReadHumidityRH(bsbmp.ACCURACY_STANDARD)
+	// if err != nil {
+	// 	return nil, err
+	// }
 
-	// Read pressure in Pa
-	pressure, err := rs.bmeSensor.ReadPressurePa(bsbmp.ACCURACY_STANDARD)
-	if err != nil {
-		return nil, err
-	}
-	// Convert pressure to hPa
-	pressure /= 100
+	// // Read pressure in Pa
+	// pressure, err := rs.bmeSensor.ReadPressurePa(bsbmp.ACCURACY_STANDARD)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// // Convert pressure to hPa
+	// pressure /= 100
 
 	rs.pmLock.RLock()
 	pm25 := rs.pm25
@@ -275,9 +275,9 @@ func (rs *RpiStation) GetData() (*StationData, error) {
 
 	m := &api.Measurement{
 		Timestamp:   &timestamp,
-		Temperature: &temperature,
-		Humidity:    &humidity,
-		Pressure:    &pressure,
+		//Temperature: &temperature,
+		//Humidity:    &humidity,
+		//Pressure:    &pressure,
 		Pm25:        &pm25,
 		Pm10:        &pm10,
 		Aqi:         nil,
